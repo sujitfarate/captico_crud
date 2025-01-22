@@ -1,3 +1,4 @@
+const { Status, Message } = require("../constants");
 const Course = require("../models/courses");
 const User = require("../models/users");
 
@@ -11,13 +12,13 @@ exports.SignUp= async (req, res) => {
   
     
       if (!username || !email || !password || !role) {
-        return res.json({status:false, message: 'All fields are required.' });
+        return res.json({status:Status.Failed, message: 'All fields are required.' });
       }
   
      
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
-        return res.json({status:false, message: 'User with this email already exists.' });
+        return res.json({status:Status.Failed, message: 'User with this email already exists.' });
       }
   
       
@@ -29,13 +30,13 @@ exports.SignUp= async (req, res) => {
       });
   
      return res.json({
-        status:true,
+        status:Status.Success,
         message: 'User registered successfully!',
        
       });
     } catch (error) {
       console.log('error=>', error.message);
-      return res.status(500).json({ status:false,message: 'Server error, please try again later.' });
+      return res.status(500).json({ status:Status.Failed,message: Message.ServerError });
     }
   }
   
@@ -47,30 +48,30 @@ exports.SignUp= async (req, res) => {
   
      
       if (!email || !password) {
-        return res.json({ status: false, message: 'Email and password are required.' });
+        return res.json({ status: Status.Failed, message: 'Email and password are required.' });
       }
   
     
       const user = await User.findOne({ where: { email } });
       if (!user) {
-        return res.json({ status: false, message: 'User not found.' });
+        return res.json({ status: Status.Failed, message: 'User not found.' });
       }
   
     
       if (user.password !== password) {
-        return res.json({ status: false, message: 'Invalid username or password.' });
+        return res.json({ status: Status.Failed, message: 'Invalid username or password.' });
       }
   
     
      return res.json({
-        status: true,
+        status: Status.Success,
         message: 'Login successful!',
         data: user,
         
       });
     } catch (error) {
       console.log('error=>', error.message);
-     return res.status(500).json({ status: false, message: 'Server error, please try again later.' });
+     return res.status(500).json({ status: Status.Failed, message: Message.ServerError });
     }
   };
   
@@ -81,13 +82,13 @@ exports.SignUp= async (req, res) => {
   
      
       if (!name || !description || !duration || !price) {
-        return res.json({ status: false, message: 'All fields are required.' });
+        return res.json({ status: Status.Failed, message: 'All fields are required.' });
       }
   
      
       const existingCourse = await Course.findOne({ where: { name } });
       if (existingCourse) {
-        return res.json({ status: false, message: 'Course with this name already exists.' });
+        return res.json({ status: Status.Failed, message: 'Course with this name already exists.' });
       }
   
     
@@ -99,13 +100,13 @@ exports.SignUp= async (req, res) => {
       });
   
       return res.json({
-        status: true,
+        status: Status.Success,
         message: 'Course created successfully!',
         course: newCourse, 
       });
     } catch (error) {
       console.log('error=>', error.message);
-      return res.status(500).json({ status: false, message: 'Server error, please try again later.' });
+      return res.status(500).json({ status: Status.Failed, message: Message.ServerError});
     }
   };
   
@@ -116,19 +117,19 @@ exports.SignUp= async (req, res) => {
   
      
       if (courses.length === 0) {
-        return res.json({ status: false, message: 'No courses found.' });
+        return res.json({ status: Status.Failed, message: 'No courses found.' });
       }
   
       return res.json({
-        status: true,
+        status: Status.Success,
         message: 'Courses fetched successfully!',
         courses,
       });
     } catch (error) {
       console.log('error=>', error.message);
       return res.status(500).json({
-        status: false,
-        message: 'Server error, please try again later.',
+        status: Status.Failed,
+        message: Message.ServerError,
       });
     }
   };
@@ -138,26 +139,26 @@ exports.SignUp= async (req, res) => {
     try {
       const { id } = req.body; 
       if (!id) {
-        return res.json({status:false, message: 'id is required.' });
+        return res.json({status:Status.Failed, message: 'id is required.' });
       }
    
       const course = await Course.findOne({ where: { id } });
       if (!course) {
-        return res.json({ status: false, message: 'Course not found.' });
+        return res.json({ status: Status.Failed, message: 'Course not found.' });
       }
   
      
       await course.destroy();
   
       return res.json({
-        status: true,
+        status: Status.Success,
         message: 'Course deleted successfully!',
       });
     } catch (error) {
       console.log('error=>', error.message);
       return res.status(500).json({
-        status: false,
-        message: 'Server error, please try again later.',
+        status: Status.Failed,
+        message: Message.ServerError,
       });
     }
   };
@@ -168,27 +169,27 @@ exports.SignUp= async (req, res) => {
       const { id, ...updateFields } = req.body; 
   console.log('updateFields====>',updateFields)
       if (!id) {
-        return res.json({ status: false, message: 'id is required.' });
+        return res.json({ status: Status.Failed, message: 'id is required.' });
       }
   
       const course = await Course.findOne({ where: { id } });
       console.log('course====>',course)
       if (!course) {
-        return res.json({ status: false, message: 'Course not found.' });
+        return res.json({ status: Status.Failed, message: 'Course not found.' });
       }
   
      
       await Course.update(updateFields, { where: { id } });
   
       return res.json({
-        status: true,
+        status: Status.Success,
         message: 'Course updated successfully!',
       });
     } catch (error) {
       console.log('error=>', error.message);
       return res.status(500).json({
-        status: false,
-        message: 'Server error, please try again later.',
+        status: Status.Failed,
+        message: Message.ServerError,
       });
     }
   };
