@@ -1,0 +1,21 @@
+// Stduent 
+CREATE TABLE `students` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `username` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL UNIQUE,
+  `password` VARCHAR(255) NOT NULL,
+  `role` ENUM('admin', 'user') DEFAULT NULL,
+  `createdAt` DATE NOT NULL,
+  `updatedAt` DATE NOT NULL
+);
+
+// courses
+CREATE TABLE courses (
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    name VARCHAR(255) NOT NULL,       
+    description TEXT NOT NULL,          
+    duration VARCHAR(50),    
+    price DECIMAL(10, 2) NOT NULL,
+    createdAt DATE NOT NULL,
+    updatedAt DATE NOT NULL
+);
